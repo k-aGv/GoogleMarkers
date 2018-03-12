@@ -41,9 +41,55 @@ namespace GoogleMarkers {
         GMapOverlay markers_overlay = new GMapOverlay("markers");
         readonly List<GPoint> tileArea = new List<GPoint>();
         BackgroundWorker bg = new BackgroundWorker();
-
+        TextBox tb_find_place;
+        Button btn_find_place;
         Graphics gfx;
 
+        private void InitUI() {
+            btn_find_place = new Button {
+                AutoSize = true,
+                Text = "Find place",
+                Location = new Point(mymap.Location.X, mymap.Location.Y + mymap.Height + 5)
+            };
+            btn_find_place.Click += Btn_find_place_Click;
+            
+            Controls.Add(btn_find_place);
+            tb_find_place = new TextBox {
+                Width = 250,
+                Location = new Point(btn_find_place.Location.X + btn_find_place.Width + 10,
+                                     btn_find_place.Location.Y + 2),
+                Text = "Type destination",
+            };
+            Controls.Add(tb_find_place);
+            tb_find_place.GotFocus += tb_find_place_GotFocus;
+            tb_find_place.LostFocus += tb_find_place_LostFocus;
+            //tb_find_place.KeyDown += Btn_find_place_Click;
+        }
+
+        private void tb_find_place_LostFocus(object sender, EventArgs e) {
+            ((TextBox)sender).Text = ((TextBox)sender).Text == "" ? "Type destination" : ((TextBox)sender).Text;
+        }
+
+        private void tb_find_place_GotFocus(object sender, EventArgs e) {
+            ((TextBox)sender).Text = ((TextBox)sender).Text == "Type destination" ? "" : ((TextBox)sender).Text;
+        }
+
+        private void Btn_find_place_Click(object sender, EventArgs e) {
+            
+            //if(sender == ((TextBox)sender)) {
+            //    if (((KeyEventArgs)e).KeyCode != Keys.Return)
+            //        return;
+            //}
+
+            var coords = GMap.NET.MapProviders.GMapProviders.GoogleMap.GetPoint(tb_find_place.Text, out GeoCoderStatusCode _e);
+            if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS)) {
+                mymap.SetPositionByKeywords(tb_find_place.Text);
+                mymap.Zoom = 10;
+            }
+            else
+                MessageBox.Show("Destination \"" + tb_find_place.Text + "\" could not be found.", "Bad destination request...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        }
 
         private void Form1_Load(object sender, EventArgs e) {
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -68,6 +114,7 @@ namespace GoogleMarkers {
 
             CreateHiddenDir();
             LoadMarkers();
+            InitUI();
         }
 
         private void PlaceMarker(MouseEventArgs _e) {
