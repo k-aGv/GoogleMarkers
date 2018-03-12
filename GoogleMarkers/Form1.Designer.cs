@@ -53,6 +53,7 @@
             this.mymap.Size = new System.Drawing.Size(669, 426);
             this.mymap.TabIndex = 0;
             this.mymap.Zoom = 0D;
+            this.mymap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.mymap_OnMarkerClick);
             this.mymap.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mymap_MouseClick);
             // 
             // menuStrip1

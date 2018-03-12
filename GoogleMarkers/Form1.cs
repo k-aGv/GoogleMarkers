@@ -52,6 +52,7 @@ namespace GoogleMarkers {
             mymap.Height = Height - (4* mymap.Location.Y);
 
             mymap.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;//using it as FULL reference to have the complete list of providers
+            
             GMaps.Instance.Mode = AccessMode.ServerOnly;
 
             mymap.SetPositionByKeywords("Greece");
@@ -84,6 +85,17 @@ namespace GoogleMarkers {
                 mymap.UpdateMarkerLocalPosition(marker);
                 mymap.Overlays.Clear();
                 mymap.Overlays.Add(markers_overlay);
+            }
+        }
+        private void RemoveMarker(GMapMarker _item, MouseEventArgs _e) {
+            if (_e.Button == MouseButtons.Right && !mymap.IsDragging) {
+                if (mymap.Overlays.Count != 0) {
+                    mymap.Overlays[0].Markers.Remove(_item);
+                    markers_overlay = mymap.Overlays[0];
+                    mymap.UpdateMarkerLocalPosition(_item);
+                    mymap.Overlays.Clear();
+                    mymap.Overlays.Add(markers_overlay);
+                }
             }
         }
         private void SaveMarkers() {
@@ -269,6 +281,10 @@ namespace GoogleMarkers {
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
             SaveMarkers();
+        }
+
+        private void mymap_OnMarkerClick(GMapMarker item, MouseEventArgs e) {
+            RemoveMarker(item, e);
         }
     }
 }
