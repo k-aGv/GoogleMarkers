@@ -24,6 +24,9 @@
         /// </summary>
         private void InitializeComponent() {
             this.mymap = new GMap.NET.WindowsForms.GMapControl();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // mymap
@@ -34,7 +37,7 @@
             this.mymap.GrayScaleMode = false;
             this.mymap.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.mymap.LevelsKeepInMemmory = 5;
-            this.mymap.Location = new System.Drawing.Point(12, 12);
+            this.mymap.Location = new System.Drawing.Point(12, 27);
             this.mymap.MarkersEnabled = true;
             this.mymap.MaxZoom = 2;
             this.mymap.MinZoom = 2;
@@ -52,22 +55,46 @@
             this.mymap.Zoom = 0D;
             this.mymap.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mymap_MouseClick);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(827, 24);
+            this.menuStrip1.TabIndex = 1;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // saveImageToolStripMenuItem
+            // 
+            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.saveImageToolStripMenuItem.Text = "Save Image";
+            this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 522);
             this.Controls.Add(this.mymap);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private GMap.NET.WindowsForms.GMapControl mymap;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
     }
 }
 
