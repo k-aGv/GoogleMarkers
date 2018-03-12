@@ -119,6 +119,7 @@ namespace GoogleMarkers {
             CreateHiddenDir();
             LoadMarkers();
             InitUI();
+            mymap.Height -= tb_find_place.Height + 2;
         }
 
         private void PlaceMarker(MouseEventArgs _e) {
