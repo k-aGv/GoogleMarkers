@@ -226,6 +226,8 @@ namespace GoogleMarkers {
             string bigImage = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + Path.DirectorySeparatorChar + "GMap_" + DateTime.Now.Ticks + ".png";
             Bitmap b = takeComponentScreenShot(mymap);
             b.Save(bigImage);
+            if (File.Exists(bigImage)) MessageBox.Show("Picture saved to desktop!");
+            else MessageBox.Show("Error while creating the image file");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
