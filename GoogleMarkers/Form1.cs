@@ -44,7 +44,7 @@ namespace GoogleMarkers {
             Controls.Add(tb_find_place);
             tb_find_place.GotFocus += tb_find_place_GotFocus;
             tb_find_place.LostFocus += tb_find_place_LostFocus;
-            //tb_find_place.KeyDown += Btn_find_place_Click;
+            tb_find_place.KeyDown += Btn_find_place_Click;
         }
 
         private void tb_find_place_LostFocus(object sender, EventArgs e) {
@@ -67,12 +67,15 @@ namespace GoogleMarkers {
         }
 
         private void Btn_find_place_Click(object sender, EventArgs e) {
-            
-            //if(sender == ((TextBox)sender)) {
-            //    if (((KeyEventArgs)e).KeyCode != Keys.Return)
-            //        return;
-            //}
 
+            try {
+                if (sender.GetType() == ((TextBox)sender).GetType())
+                    if (((KeyEventArgs)e).KeyData != Keys.Return) {
+                        return;
+                    }
+            }
+            catch { }
+            
             var coords = GMapProviders.GoogleMap.GetPoint(tb_find_place.Text, out GeoCoderStatusCode _e);
             if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS)) {
                 mymap.SetPositionByKeywords(tb_find_place.Text);
@@ -91,7 +94,6 @@ namespace GoogleMarkers {
                     MessageBox.Show("Destination \"" + tb_find_place.Text + "\" could not be found.", "Bad destination request...", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
-
         }
 
         private void Form1_Load(object sender, EventArgs e) {
