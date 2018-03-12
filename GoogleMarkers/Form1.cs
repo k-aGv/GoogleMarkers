@@ -74,6 +74,17 @@ namespace GoogleMarkers {
             ((TextBox)sender).Text = ((TextBox)sender).Text == "Type destination" ? "" : ((TextBox)sender).Text;
         }
 
+        public string FirstLetterToUpper(string str)
+        {
+            if (str == null)
+                return null;
+
+            if (str.Length > 1)
+                return char.ToUpper(str[0]) + str.Substring(1);
+
+            return str.ToUpper();
+        }
+
         private void Btn_find_place_Click(object sender, EventArgs e) {
             
             //if(sender == ((TextBox)sender)) {
@@ -87,7 +98,18 @@ namespace GoogleMarkers {
                 mymap.Zoom = 10;
             }
             else
-                MessageBox.Show("Destination \"" + tb_find_place.Text + "\" could not be found.", "Bad destination request...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            {
+                string _s = FirstLetterToUpper(tb_find_place.Text);
+                
+                coords = GMap.NET.MapProviders.GMapProviders.GoogleMap.GetPoint(_s, out GeoCoderStatusCode __e);
+                if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS))
+                {
+                    mymap.SetPositionByKeywords(tb_find_place.Text);
+                    mymap.Zoom = 10;
+                } else 
+                    MessageBox.Show("Destination \"" + tb_find_place.Text + "\" could not be found.", "Bad destination request...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
 
         }
 
