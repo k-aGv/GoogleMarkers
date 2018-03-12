@@ -17,33 +17,14 @@ namespace GoogleMarkers {
         public Form1() {
             InitializeComponent();
         }
-        public struct MapInfo
-        {
-            public RectLatLng Area;
-            public int Zoom;
-            public GMapProvider Type;
-            public bool MakeWorldFile;
-            public bool MakeKmz;//WE DONT USE IT BUT STRUCT NEEDS IT
-
-            public MapInfo(RectLatLng Area, int Zoom, GMapProvider Type, bool makeWorldFile, bool MakeKmz)
-            {
-                this.Area = Area;
-                this.Zoom = Zoom;
-                this.Type = Type;
-                this.MakeWorldFile = makeWorldFile;
-                this.MakeKmz = MakeKmz;//WE DONT USE IT BUT STRUCT NEEDS IT
-            }
-        }
+ 
 
         private double _zoomFactor = 6;
         private string _markers = Directory.GetCurrentDirectory() + "/.tmp/_temporary/_markers";
 
         GMapOverlay markers_overlay = new GMapOverlay("markers");
-        readonly List<GPoint> tileArea = new List<GPoint>();
-        BackgroundWorker bg = new BackgroundWorker();
         TextBox tb_find_place;
         Button btn_find_place;
-        Graphics gfx;
 
         private void InitUI() {
             btn_find_place = new Button {
@@ -92,7 +73,7 @@ namespace GoogleMarkers {
             //        return;
             //}
 
-            var coords = GMap.NET.MapProviders.GMapProviders.GoogleMap.GetPoint(tb_find_place.Text, out GeoCoderStatusCode _e);
+            var coords = GMapProviders.GoogleMap.GetPoint(tb_find_place.Text, out GeoCoderStatusCode _e);
             if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS)) {
                 mymap.SetPositionByKeywords(tb_find_place.Text);
                 mymap.Zoom = 10;
@@ -101,7 +82,7 @@ namespace GoogleMarkers {
             {
                 string _s = FirstLetterToUpper(tb_find_place.Text);
                 
-                coords = GMap.NET.MapProviders.GMapProviders.GoogleMap.GetPoint(_s, out GeoCoderStatusCode __e);
+                coords = GMapProviders.GoogleMap.GetPoint(_s, out GeoCoderStatusCode __e);
                 if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS))
                 {
                     mymap.SetPositionByKeywords(tb_find_place.Text);
@@ -119,7 +100,7 @@ namespace GoogleMarkers {
             mymap.Width = Width - (3*mymap.Location.X);
             mymap.Height = Height - (4* mymap.Location.Y);
 
-            mymap.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;//using it as FULL reference to have the complete list of providers
+            mymap.MapProvider = GoogleMapProvider.Instance;//using it as FULL reference to have the complete list of providers
             
             GMaps.Instance.Mode = AccessMode.ServerOnly;
 
