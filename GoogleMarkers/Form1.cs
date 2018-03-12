@@ -117,7 +117,7 @@ namespace GoogleMarkers {
             mymap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
             mymap.DragButton = MouseButtons.Left;
             mymap.InvertedMouseWheelZooming = false;
-            mymap.ShowCenter = false;
+            
 
 
 
@@ -212,11 +212,15 @@ namespace GoogleMarkers {
 
         private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            mymap.ShowCenter = false;
+            mymap.Refresh();
             string bigImage = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + Path.DirectorySeparatorChar + "GMap_" + DateTime.Now.Ticks + ".png";
             Bitmap b = takeComponentScreenShot(mymap);
             b.Save(bigImage);
             if (File.Exists(bigImage)) MessageBox.Show("Picture saved to desktop!");
             else MessageBox.Show("Error while creating the image file");
+            mymap.ShowCenter = true;
+            mymap.Refresh();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
