@@ -50,6 +50,7 @@
             this.mymap.Size = new System.Drawing.Size(669, 426);
             this.mymap.TabIndex = 0;
             this.mymap.Zoom = 0D;
+            this.mymap.MouseClick += new System.Windows.Forms.MouseEventHandler(this.mymap_MouseClick);
             // 
             // Form1
             // 
