@@ -23,49 +23,50 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
+            this.mymap = new GMap.NET.WindowsForms.GMapControl();
             this.SuspendLayout();
             // 
-            // gMapControl1
+            // mymap
             // 
-            this.gMapControl1.Bearing = 0F;
-            this.gMapControl1.CanDragMap = true;
-            this.gMapControl1.EmptyTileColor = System.Drawing.Color.Navy;
-            this.gMapControl1.GrayScaleMode = false;
-            this.gMapControl1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.gMapControl1.LevelsKeepInMemmory = 5;
-            this.gMapControl1.Location = new System.Drawing.Point(12, 12);
-            this.gMapControl1.MarkersEnabled = true;
-            this.gMapControl1.MaxZoom = 2;
-            this.gMapControl1.MinZoom = 2;
-            this.gMapControl1.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
-            this.gMapControl1.Name = "gMapControl1";
-            this.gMapControl1.NegativeMode = false;
-            this.gMapControl1.PolygonsEnabled = true;
-            this.gMapControl1.RetryLoadTile = 0;
-            this.gMapControl1.RoutesEnabled = true;
-            this.gMapControl1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
-            this.gMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
-            this.gMapControl1.ShowTileGridLines = false;
-            this.gMapControl1.Size = new System.Drawing.Size(669, 426);
-            this.gMapControl1.TabIndex = 0;
-            this.gMapControl1.Zoom = 0D;
+            this.mymap.Bearing = 0F;
+            this.mymap.CanDragMap = true;
+            this.mymap.EmptyTileColor = System.Drawing.Color.Navy;
+            this.mymap.GrayScaleMode = false;
+            this.mymap.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
+            this.mymap.LevelsKeepInMemmory = 5;
+            this.mymap.Location = new System.Drawing.Point(12, 12);
+            this.mymap.MarkersEnabled = true;
+            this.mymap.MaxZoom = 2;
+            this.mymap.MinZoom = 2;
+            this.mymap.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
+            this.mymap.Name = "mymap";
+            this.mymap.NegativeMode = false;
+            this.mymap.PolygonsEnabled = true;
+            this.mymap.RetryLoadTile = 0;
+            this.mymap.RoutesEnabled = true;
+            this.mymap.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
+            this.mymap.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
+            this.mymap.ShowTileGridLines = false;
+            this.mymap.Size = new System.Drawing.Size(669, 426);
+            this.mymap.TabIndex = 0;
+            this.mymap.Zoom = 0D;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 522);
-            this.Controls.Add(this.gMapControl1);
+            this.Controls.Add(this.mymap);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private GMap.NET.WindowsForms.GMapControl gMapControl1;
+        private GMap.NET.WindowsForms.GMapControl mymap;
     }
 }
 
