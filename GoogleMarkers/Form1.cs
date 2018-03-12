@@ -113,6 +113,7 @@ namespace GoogleMarkers {
                     mymap.UpdateMarkerLocalPosition(marker);
                 } while (!_r.EndOfStream);
                 mymap.Overlays.Add(markers_overlay);
+                mymap.SetZoomToFitRect(mymap.GetRectOfAllMarkers(mymap.Overlays[0].Id).Value);
                 _r.Close();
             }
         }
