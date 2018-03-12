@@ -36,8 +36,9 @@ namespace GoogleMarkers {
         }
 
         private double _zoomFactor = 6;
+        private string _markers = Directory.GetCurrentDirectory() + "/.tmp/_temporary/_markers";
+
         GMapOverlay markers_overlay = new GMapOverlay("markers");
-        List<GMapMarker> markers = new List<GMapMarker>();
         readonly List<GPoint> tileArea = new List<GPoint>();
         BackgroundWorker bg = new BackgroundWorker();
 
@@ -61,20 +62,68 @@ namespace GoogleMarkers {
             mymap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
             mymap.DragButton = MouseButtons.Left;
             mymap.InvertedMouseWheelZooming = false;
+
+
+
+            CreateHiddenDir();
+            LoadMarkers();
         }
 
         private void PlaceMarker(MouseEventArgs _e) {
-            PointLatLng final = new PointLatLng(
-                    mymap.FromLocalToLatLng(_e.X, _e.Y).Lat,
-                    mymap.FromLocalToLatLng(_e.X, _e.Y).Lng
-                    );
+            if (_e.Button == MouseButtons.Left && !mymap.IsDragging) {
 
-            GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
-            markers.Add(marker);
-            markers_overlay.Markers.Add(markers[markers.Count - 1]);
+                PointLatLng final = new PointLatLng(
+                        mymap.FromLocalToLatLng(_e.X, _e.Y).Lat,
+                        mymap.FromLocalToLatLng(_e.X, _e.Y).Lng
+                        );
 
-            mymap.UpdateMarkerLocalPosition(markers[markers.Count - 1]);
-            mymap.Overlays.Add(markers_overlay);
+                GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
+                marker.Tag = "Marker_" + markers_overlay.Markers.Count;
+                markers_overlay.Markers.Add(marker);
+
+                mymap.UpdateMarkerLocalPosition(marker);
+                mymap.Overlays.Clear();
+                mymap.Overlays.Add(markers_overlay);
+            }
+        }
+        private void SaveMarkers() {
+            StreamWriter _wr;
+            if (mymap.Overlays.Count != 0) {
+                _wr = new StreamWriter(_markers);
+                foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                    _wr.WriteLine(_m.Tag + "," + _m.Position.Lat + "," + _m.Position.Lng);
+                }
+                _wr.Close();
+            }
+        }
+        private void LoadMarkers() {
+            StreamReader _r;
+            if (File.Exists(_markers)) {
+                _r = new StreamReader(_markers);
+                do {
+                    string _tmp = _r.ReadLine();
+                    PointLatLng final = new PointLatLng(
+                        Convert.ToDouble(_tmp.Split(',')[1]),
+                        Convert.ToDouble(_tmp.Split(',')[2])
+                        );
+
+                    GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
+                    marker.Tag = "Marker_" + markers_overlay.Markers.Count;
+                    markers_overlay.Markers.Add(marker);
+                    mymap.UpdateMarkerLocalPosition(marker);
+                } while (!_r.EndOfStream);
+                mymap.Overlays.Add(markers_overlay);
+                _r.Close();
+            }
+        }
+        private void CreateHiddenDir() {
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "/.tmp/_temporary")) {
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/.tmp/_temporary");
+                DirectoryInfo dirinfo = new DirectoryInfo(Directory.GetCurrentDirectory() + "/.tmp");
+                dirinfo.Attributes = FileAttributes.Hidden;
+                dirinfo = new DirectoryInfo(Directory.GetCurrentDirectory() + "/.tmp/_temporary");
+                dirinfo.Attributes = FileAttributes.Hidden;
+            }
         }
 
         private void mymap_MouseClick(object sender, MouseEventArgs e) {
@@ -217,5 +266,8 @@ namespace GoogleMarkers {
             }
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+            SaveMarkers();
+        }
     }
 }
