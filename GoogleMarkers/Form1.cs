@@ -29,6 +29,7 @@ namespace GoogleMarkers {
         private void InitUI() {
             btn_find_place = new Button {
                 AutoSize = true,
+                Name = "btn_find_place",
                 Text = "Find place",
                 Location = new Point(mymap.Location.X, mymap.Location.Y + mymap.Height + 5)
             };
@@ -37,9 +38,11 @@ namespace GoogleMarkers {
             Controls.Add(btn_find_place);
             tb_find_place = new TextBox {
                 Width = 250,
+                Name = "tb_find_place",
+                Text = "Type destination",
                 Location = new Point(btn_find_place.Location.X + btn_find_place.Width + 10,
                                      btn_find_place.Location.Y + 2),
-                Text = "Type destination",
+                
             };
             Controls.Add(tb_find_place);
             tb_find_place.GotFocus += tb_find_place_GotFocus;
@@ -155,11 +158,13 @@ namespace GoogleMarkers {
         private void SaveMarkers() {
             StreamWriter _wr;
             if (mymap.Overlays.Count != 0) {
-                _wr = new StreamWriter(_markers);
-                foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
-                    _wr.WriteLine(_m.Tag + "," + _m.Position.Lat + "," + _m.Position.Lng);
+                if (mymap.Overlays[0].Markers.Count != 0) {
+                    _wr = new StreamWriter(_markers);
+                    foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                        _wr.WriteLine(_m.Tag + "," + _m.Position.Lat + "," + _m.Position.Lng);
+                    }
+                    _wr.Close();
                 }
-                _wr.Close();
             }
         }
         private void LoadMarkers() {
