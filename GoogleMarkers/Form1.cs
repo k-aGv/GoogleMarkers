@@ -23,7 +23,6 @@ namespace GoogleMarkers {
 
         private void Form1_Load(object sender, EventArgs e) {
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
             WindowState = FormWindowState.Maximized;
             mymap.Width = Width - (3*mymap.Location.X);
             mymap.Height = Height - (5* mymap.Location.Y);
