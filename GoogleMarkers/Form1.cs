@@ -17,8 +17,8 @@ namespace GoogleMarkers {
         public Form1() {
             InitializeComponent();
         }
- 
-
+        
+        private bool _clickHandled = false;
         private double _zoomFactor = 6;
         private string _markers = Directory.GetCurrentDirectory() + "/.tmp/_temporary/_markers";
 
@@ -195,7 +195,9 @@ namespace GoogleMarkers {
         }
 
         private void mymap_MouseClick(object sender, MouseEventArgs e) {
-            PlaceMarker(e);
+            if (!_clickHandled)
+                PlaceMarker(e);
+            _clickHandled = false;
         }
         public static Bitmap takeComponentScreenShot(Control control)
         {
@@ -222,9 +224,21 @@ namespace GoogleMarkers {
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
             SaveMarkers();
         }
-
+        
         private void mymap_OnMarkerClick(GMapMarker item, MouseEventArgs e) {
-            RemoveMarker(item, e);
+            if (e.Button == MouseButtons.Left) {
+                
+                mymap.SetZoomToFitRect(new RectLatLng(item.Position,new SizeLatLng(0.1,0.1)));
+                mymap.Position = new PointLatLng(item.Position.Lat, item.Position.Lng);
+
+                _clickHandled = true;
+            }
+            else {
+                MessageBox.Show("e");
+                _clickHandled = false;
+                RemoveMarker(item, e);
+               
+            }
         }
     }
 }
