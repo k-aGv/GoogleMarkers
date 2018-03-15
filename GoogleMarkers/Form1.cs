@@ -157,7 +157,7 @@ namespace GoogleMarkers {
                 if (mymap.Overlays[0].Markers.Count != 0) {
                     _wr = new StreamWriter(_markers);
                     foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
-                        _wr.WriteLine(_m.Tag + "," + _m.Position.Lat + "," + _m.Position.Lng);
+                        _wr.WriteLine(_m.Tag + "|" + _m.Position.Lat + "|" + _m.Position.Lng);
                     }
                     _wr.Close();
                 }
@@ -170,12 +170,11 @@ namespace GoogleMarkers {
                 do {
                     string _tmp = _r.ReadLine();
                     PointLatLng final = new PointLatLng(
-                        Convert.ToDouble(_tmp.Split(',')[1]),
-                        Convert.ToDouble(_tmp.Split(',')[2])
+                        Convert.ToDouble(_tmp.Split('|')[1]),
+                        Convert.ToDouble(_tmp.Split('|')[2])
                         );
-
                     GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
-                    marker.Tag = "Marker_" + markers_overlay.Markers.Count;
+                    marker.Tag = "Marker_" + _tmp.Split('|')[0].Split('_')[1];
                     markers_overlay.Markers.Add(marker);
                     mymap.UpdateMarkerLocalPosition(marker);
                 } while (!_r.EndOfStream);
@@ -234,7 +233,6 @@ namespace GoogleMarkers {
                 _clickHandled = true;
             }
             else {
-                MessageBox.Show("e");
                 _clickHandled = false;
                 RemoveMarker(item, e);
                
