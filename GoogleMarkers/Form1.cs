@@ -132,12 +132,25 @@ namespace GoogleMarkers {
                         );
 
                 GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
-                marker.Tag = "Marker_" + markers_overlay.Markers.Count;
+                GeoCoderStatusCode status;
+                var _tmp = GMapProviders.GoogleSatelliteMap.GetPlacemark(final, out status);
+                if (status == GeoCoderStatusCode.G_GEO_SUCCESS) {
+                    marker.Tag = _tmp.Value.Address;
+                    marker.ToolTipText = _tmp.Value.Address;
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                }
+                else {
+                    MessageBox.Show("Could not obtain address of Marker from Google. Please try again", "Unsuccessful request", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
                 markers_overlay.Markers.Add(marker);
 
                 mymap.UpdateMarkerLocalPosition(marker);
                 mymap.Overlays.Clear();
                 mymap.Overlays.Add(markers_overlay);
+
+                EditMarkersMenuStripItem();
             }
         }
         private void RemoveMarker(GMapMarker _item, MouseEventArgs _e) {
@@ -148,6 +161,7 @@ namespace GoogleMarkers {
                     mymap.UpdateMarkerLocalPosition(_item);
                     mymap.Overlays.Clear();
                     mymap.Overlays.Add(markers_overlay);
+                    EditMarkersMenuStripItem();
                 }
             }
         }
@@ -176,13 +190,41 @@ namespace GoogleMarkers {
                         Convert.ToDouble(_tmp.Split('|')[2])
                         );
                     GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
-                    marker.Tag = "Marker_" + _tmp.Split('|')[0].Split('_')[1];
+                    marker.Tag = _tmp.Split('|')[0];
                     markers_overlay.Markers.Add(marker);
                     mymap.UpdateMarkerLocalPosition(marker);
                 } while (!_r.EndOfStream);
                 mymap.Overlays.Add(markers_overlay);
                 mymap.SetZoomToFitRect(mymap.GetRectOfAllMarkers(mymap.Overlays[0].Id).Value);
                 _r.Close();
+            }
+
+            EditMarkersMenuStripItem();
+        }
+        private void EditMarkersMenuStripItem() {
+            if (mymap.Overlays.Count == 0)
+                return;
+
+            ToolStripItem[] _tmp = menuStrip1.Items.Find("Markers", false);
+            if (_tmp.Length != 0) {
+                menuStrip1.Items.RemoveAt(menuStrip1.Items.IndexOf(_tmp[0]));
+            }
+
+            if (mymap.Overlays[0].Markers.Count == 0)
+                return;
+
+            ToolStripMenuItem _section = new ToolStripMenuItem {
+                Name = "Markers",
+                Text = "Markers"
+            };
+            menuStrip1.Items.Add(_section);
+            foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                ToolStripItem _t = new ToolStripMenuItem {
+                    Name = _m.Tag.ToString(),
+                    Text = _m.Tag.ToString()
+                    
+                };
+                _section.DropDownItems.Add(_t);
             }
         }
         private void CreateHiddenDir() {
