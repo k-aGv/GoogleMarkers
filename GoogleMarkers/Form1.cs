@@ -118,13 +118,9 @@ namespace GoogleMarkers {
             mymap.DragButton = MouseButtons.Left;
             mymap.InvertedMouseWheelZooming = false;
             
-
-
-
             CreateHiddenDir();
             LoadMarkers();
             InitUI();
-            mymap.Height -= tb_find_place.Height + 2;
         }
 
         private void PlaceMarker(MouseEventArgs _e) {
@@ -203,7 +199,7 @@ namespace GoogleMarkers {
         }
         public static Bitmap takeComponentScreenShot(Control control)
         {
-            Rectangle rect = control.RectangleToScreen(control.Bounds);
+            Rectangle rect = control.RectangleToScreen(control.DisplayRectangle);
             Bitmap bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
             Graphics g = Graphics.FromImage(bmp);
             g.CopyFromScreen(rect.Left, rect.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
