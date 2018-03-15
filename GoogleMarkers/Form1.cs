@@ -152,6 +152,8 @@ namespace GoogleMarkers {
             }
         }
         private void SaveMarkers() {
+            if (File.Exists(_markers))
+                File.Delete(_markers);
             StreamWriter _wr;
             if (mymap.Overlays.Count != 0) {
                 if (mymap.Overlays[0].Markers.Count != 0) {
