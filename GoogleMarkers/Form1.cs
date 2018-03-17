@@ -17,7 +17,7 @@ namespace GoogleMarkers {
         public Form1() {
             InitializeComponent();
         }
-        
+
         private bool _clickHandled = false;
         private double _zoomFactor = 6;
         private string _markers = Directory.GetCurrentDirectory() + "/.tmp/_temporary/_markers";
@@ -34,7 +34,7 @@ namespace GoogleMarkers {
                 Location = new Point(mymap.Location.X, mymap.Location.Y + mymap.Height + 5)
             };
             btn_find_place.Click += Btn_find_place_Click;
-            
+
             Controls.Add(btn_find_place);
             tb_find_place = new TextBox {
                 Width = 250,
@@ -42,7 +42,7 @@ namespace GoogleMarkers {
                 Text = "Type destination",
                 Location = new Point(btn_find_place.Location.X + btn_find_place.Width + 10,
                                      btn_find_place.Location.Y + 2),
-                
+
             };
             Controls.Add(tb_find_place);
             tb_find_place.GotFocus += tb_find_place_GotFocus;
@@ -58,8 +58,7 @@ namespace GoogleMarkers {
             ((TextBox)sender).Text = ((TextBox)sender).Text == "Type destination" ? "" : ((TextBox)sender).Text;
         }
 
-        public string FirstLetterToUpper(string str)
-        {
+        public string FirstLetterToUpper(string str) {
             if (str == null)
                 return null;
 
@@ -78,22 +77,20 @@ namespace GoogleMarkers {
                     }
             }
             catch { }
-            
+
             var coords = GMapProviders.GoogleMap.GetPoint(tb_find_place.Text, out GeoCoderStatusCode _e);
             if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS)) {
                 mymap.SetPositionByKeywords(tb_find_place.Text);
                 mymap.Zoom = 10;
             }
-            else
-            {
+            else {
                 string _s = FirstLetterToUpper(tb_find_place.Text);
-                
+
                 coords = GMapProviders.GoogleMap.GetPoint(_s, out GeoCoderStatusCode __e);
-                if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS))
-                {
+                if (coords.HasValue && _e.Equals(GeoCoderStatusCode.G_GEO_SUCCESS)) {
                     mymap.SetPositionByKeywords(tb_find_place.Text);
                     mymap.Zoom = 10;
-                } else 
+                } else
                     MessageBox.Show("Destination \"" + tb_find_place.Text + "\" could not be found.", "Bad destination request...", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             ((KeyEventArgs)e).SuppressKeyPress = true;
@@ -102,22 +99,22 @@ namespace GoogleMarkers {
         private void Form1_Load(object sender, EventArgs e) {
             FormBorderStyle = FormBorderStyle.FixedSingle;
             WindowState = FormWindowState.Maximized;
-            mymap.Width = Width - (3*mymap.Location.X);
-            mymap.Height = Height - (4* mymap.Location.Y);
+            mymap.Width = Width - (3 * mymap.Location.X);
+            mymap.Height = Height - (4 * mymap.Location.Y);
 
             mymap.MapProvider = GoogleMapProvider.Instance;//using it as FULL reference to have the complete list of providers
-            
+
             GMaps.Instance.Mode = AccessMode.ServerOnly;
 
             mymap.SetPositionByKeywords("Greece");
-            
+
             mymap.MinZoom = 0;
             mymap.MaxZoom = 18;
             mymap.Zoom = _zoomFactor;
             mymap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
             mymap.DragButton = MouseButtons.Left;
             mymap.InvertedMouseWheelZooming = false;
-            
+
             CreateHiddenDir();
             LoadMarkers();
             InitUI();
@@ -143,7 +140,7 @@ namespace GoogleMarkers {
                     MessageBox.Show("Could not obtain address of Marker from Google. Please try again", "Unsuccessful request", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                
+
                 markers_overlay.Markers.Add(marker);
 
                 mymap.UpdateMarkerLocalPosition(marker);
@@ -194,6 +191,8 @@ namespace GoogleMarkers {
                         Convert.ToDouble(_tmp.Split('|')[2])
                         );
                     GMapMarker marker = new GMap.NET.WindowsForms.Markers.GMarkerGoogle(final, GMap.NET.WindowsForms.Markers.GMarkerGoogleType.green);
+                    marker.ToolTipText = _tmp.Split('|')[0];
+                    marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
                     marker.Tag = _tmp.Split('|')[0];
                     markers_overlay.Markers.Add(marker);
                     mymap.UpdateMarkerLocalPosition(marker);
@@ -226,11 +225,30 @@ namespace GoogleMarkers {
                 ToolStripItem _t = new ToolStripMenuItem {
                     Name = _m.Tag.ToString(),
                     Text = _m.Tag.ToString()
-                    
+
                 };
                 _t.Click += MarkerMenuStrip_Click;
+                _t.MouseHover += MarkerMenuStrip_Hover;
+                _t.MouseLeave += MarkerMenuStrip_Leave;
                 _section.DropDownItems.Add(_t);
             }
+        }
+        private void MarkerMenuStrip_Leave(object sender, EventArgs e) {
+            foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                if (_m.Tag.ToString() == sender.ToString()) {
+                    _m.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    mymap.Refresh();
+                }
+            }
+        }
+
+        private void MarkerMenuStrip_Hover(object sender, EventArgs e) {
+            foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                if (_m.Tag.ToString() == sender.ToString()) {
+                    _m.ToolTipMode = MarkerTooltipMode.Always;
+                    mymap.Refresh();
+                }
+            }            
         }
 
         private void MarkerMenuStrip_Click(object sender, EventArgs e) {
