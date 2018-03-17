@@ -165,6 +165,10 @@ namespace GoogleMarkers {
                 }
             }
         }
+        private void FocusMarker(GMapMarker _item) {
+            mymap.SetZoomToFitRect(new RectLatLng(_item.Position, new SizeLatLng(0.1, 0.1)));
+            mymap.Position = new PointLatLng(_item.Position.Lat, _item.Position.Lng);
+        }
         private void SaveMarkers() {
             if (File.Exists(_markers))
                 File.Delete(_markers);
@@ -224,9 +228,18 @@ namespace GoogleMarkers {
                     Text = _m.Tag.ToString()
                     
                 };
+                _t.Click += MarkerMenuStrip_Click;
                 _section.DropDownItems.Add(_t);
             }
         }
+
+        private void MarkerMenuStrip_Click(object sender, EventArgs e) {
+            foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
+                if (_m.Tag.ToString() == sender.ToString())
+                    FocusMarker(_m);
+            }
+        }
+
         private void CreateHiddenDir() {
             if (!Directory.Exists(Directory.GetCurrentDirectory() + "/.tmp/_temporary")) {
                 Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/.tmp/_temporary");
@@ -270,10 +283,7 @@ namespace GoogleMarkers {
         
         private void mymap_OnMarkerClick(GMapMarker item, MouseEventArgs e) {
             if (e.Button == MouseButtons.Left) {
-                
-                mymap.SetZoomToFitRect(new RectLatLng(item.Position,new SizeLatLng(0.1,0.1)));
-                mymap.Position = new PointLatLng(item.Position.Lat, item.Position.Lng);
-
+                FocusMarker(item);
                 _clickHandled = true;
             }
             else {
