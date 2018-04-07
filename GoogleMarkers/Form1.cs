@@ -227,12 +227,13 @@ namespace GoogleMarkers {
                     Text = _m.Tag.ToString()
 
                 };
-                _t.Click += MarkerMenuStrip_Click;
+                _t.MouseDown += MarkerMenuStrip_Click;
                 _t.MouseHover += MarkerMenuStrip_Hover;
                 _t.MouseLeave += MarkerMenuStrip_Leave;
                 _section.DropDownItems.Add(_t);
             }
         }
+       
         private void MarkerMenuStrip_Leave(object sender, EventArgs e) {
             foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
                 if (_m.Tag.ToString() == sender.ToString()) {
@@ -251,10 +252,16 @@ namespace GoogleMarkers {
             }            
         }
 
-        private void MarkerMenuStrip_Click(object sender, EventArgs e) {
+        private void MarkerMenuStrip_Click(object sender, MouseEventArgs e) {
             foreach (GMapMarker _m in mymap.Overlays[0].Markers) {
-                if (_m.Tag.ToString() == sender.ToString())
-                    FocusMarker(_m);
+                if (_m.Tag.ToString() == sender.ToString()) {
+                    if (e.Button == MouseButtons.Left)
+                        FocusMarker(_m);
+                    else if (e.Button == MouseButtons.Right){
+                        Notes notes = new Notes(_m, _markers);
+                        notes.ShowDialog();
+                    }
+                }
             }
         }
 
